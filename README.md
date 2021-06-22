@@ -1,3 +1,9 @@
+# How to use
+
+Build react thing with `npm run build`
+
+Start the server with `npm run server` (the react app is served by the json server)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
