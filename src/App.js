@@ -2,11 +2,11 @@ import React, {useState, useEffect} from 'react';
 import TodoItem from './components/TodoItem'
 import todoService from './services/todo'
 import { ListGroup, Form, Button } from 'react-bootstrap'
-import './App.css';
 
 const App = (props) => {
   const [todoItems, setTodoItems] = useState([])
   const [newTodoItem, setNewTodoItem] = useState('')
+  const [showAll, setShowAll] = useState(true)
 
   useEffect(() => {
     todoService
@@ -54,21 +54,27 @@ const App = (props) => {
       })
   }
 
+  const todoItemsToShow = showAll
+    ? todoItems
+    : todoItems.filter(item => !item.completed)
 
   return (
-    <div className="container">
+    <div className="container" style={{marginTop: "5vh"}}>
       <div style={{textAlign:"center"}}>
-        <h1>Todo List</h1>
+        <h1>Shit I Need Todo</h1>
+      </div >
+      <div style={{ textAlign:"right", margin:" 0.5% 0" }} >
+      <Button onClick={() => setShowAll(!showAll) } > {showAll ? "Hide Completed" : "Show All" } </Button>
       </div>
       <ListGroup>
-        {todoItems.map(item => <TodoItem key={item.id}
+        {todoItemsToShow.map(item => <TodoItem key={item.id}
                                          item={item}
                                          toggleCompletion={() => toggleTodoCompletion(item.id)}
                                          deleteCompletion={() => deleteTodoItem(item.id)} />)}
       </ListGroup>
       <Form onSubmit={addTodoItem} style={{marginTop: "1em"}}>
           <Form.Control value={newTodoItem} onChange={handleTodoItemChange} />
-          <Button variant="dark" type="submit" style={{marginTop: "0.5em"}}>Save</Button>
+          <Button type="submit" style={{marginTop: "0.5%"}}>Save</Button>
       </Form>
     </div>
   );
