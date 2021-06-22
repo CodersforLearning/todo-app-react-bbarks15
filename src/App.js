@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import TodoItem from './components/TodoItem'
 import todoService from './services/todo'
 import { ListGroup, Form, Button } from 'react-bootstrap'
+import { nanoid } from 'nanoid'
 
 const App = (props) => {
   const [todoItems, setTodoItems] = useState([])
@@ -19,7 +20,7 @@ const App = (props) => {
   const addTodoItem = (event) => {
     event.preventDefault()
     const newTodo = {
-      id: todoItems.length + 1,
+      id: nanoid(),
       text: newTodoItem,
       completed: false,
     }
