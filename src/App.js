@@ -1,10 +1,20 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import TodoItem from './components/TodoItem'
+import todoService from './services/todo'
+import { ListGroup, Form, Button } from 'react-bootstrap'
 import './App.css';
 
 const App = (props) => {
-  const [todoItems, setTodoItems] = useState(props.items)
+  const [todoItems, setTodoItems] = useState([])
   const [newTodoItem, setNewTodoItem] = useState('')
+
+  useEffect(() => {
+    todoService
+      .getAll()
+      .then(initialTodoItems => {
+        setTodoItems(initialTodoItems)
+      })
+  }, [])
 
   const addTodoItem = (event) => {
     event.preventDefault()
@@ -13,8 +23,20 @@ const App = (props) => {
       text: newTodoItem,
       completed: false,
     }
-    setTodoItems(todoItems.concat(newTodo))
-    setNewTodoItem('')
+
+    todoService
+      .create(newTodo)
+      .then(returnedTodo => {
+        setTodoItems(todoItems.concat(newTodo))
+        setNewTodoItem('')
+      })
+
+  }
+
+  const deleteTodoItem = id => {
+    todoService
+      .remove(id)
+      .then(setTodoItems(todoItems.filter(item => item.id !== id)))
   }
 
   const handleTodoItemChange = (event) => {
@@ -24,23 +46,30 @@ const App = (props) => {
   const toggleTodoCompletion = id => {
     const todoItem = todoItems.find(n => n.id === id)
     const changedItem = { ...todoItem, completed: !todoItem.completed }
-    setTodoItems(todoItems.map(item => item.id !== id ? item : changedItem))
+
+    todoService
+      .update(id, changedItem)
+      .then(returnedTodo => {
+        setTodoItems(todoItems.map(item => item.id !== id ? item : returnedTodo))
+      })
   }
 
 
   return (
-    <div>
-      <h1>TodoList</h1>
-      <ul>
-        {todoItems.map(item => <TodoItem key={item.id} item={item} toggleCompletion={() => toggleTodoCompletion(item.id)} />)}
-      </ul>
-      <form onSubmit={addTodoItem}>
-        <input
-          value={newTodoItem}
-          onChange={handleTodoItemChange}
-        />
-        <button type="submit">save</button>
-      </form>
+    <div className="container">
+      <div style={{textAlign:"center"}}>
+        <h1>Todo List</h1>
+      </div>
+      <ListGroup>
+        {todoItems.map(item => <TodoItem key={item.id}
+                                         item={item}
+                                         toggleCompletion={() => toggleTodoCompletion(item.id)}
+                                         deleteCompletion={() => deleteTodoItem(item.id)} />)}
+      </ListGroup>
+      <Form onSubmit={addTodoItem} style={{marginTop: "1em"}}>
+          <Form.Control value={newTodoItem} onChange={handleTodoItemChange} />
+          <Button variant="dark" type="submit" style={{marginTop: "0.5em"}}>Save</Button>
+      </Form>
     </div>
   );
 }

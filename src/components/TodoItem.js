@@ -1,13 +1,17 @@
 import React from 'react'
+import {ListGroup, Button} from 'react-bootstrap'
 
-const TodoItem = ({ item, toggleCompletion }) => {
+const TodoItem = ({ item, toggleCompletion, deleteCompletion }) => {
   const status = item.completed ? "unfinish" : "finish"
 
+  const buttonStyle = {float:"right", margin:"0 0.5em"}
+
   return (
-    <li className={item.completed ? "completed" : null}>
+    <ListGroup.Item style={item.completed ? {textDecoration:"line-through"} : null}>
       {item.text}
-      <button onClick={toggleCompletion}>{status}</button>
-    </li >
+      <Button onClick={deleteCompletion} variant="danger" style={buttonStyle}>delete</Button>
+      <Button onClick={toggleCompletion} variant="outline-dark" style={buttonStyle}>{status}</Button>
+    </ListGroup.Item >
   )
 }
 

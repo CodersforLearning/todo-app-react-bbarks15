@@ -1,0 +1,24 @@
+{
+  "todo": [
+    {
+      "id": 1,
+      "text": "test1",
+      "completed": true
+    },
+    {
+      "id": 2,
+      "text": "test2",
+      "completed": false
+    },
+    {
+      "id": 3,
+      "text": "test3",
+      "completed": false
+    },
+    {
+      "id": 4,
+      "text": "test",
+      "completed": true
+    }
+  ]
+}
