@@ -37,7 +37,9 @@ const App = () => {
   const deleteTodoItem = id => {
     todoService
       .remove(id)
-      .then(setTodoItems(todoItems.filter(item => item.id !== id)))
+      .then(() => {
+        setTodoItems(todoItems.filter(item => item.id !== id))
+      })
   }
 
   const handleTodoItemChange = (event) => {
@@ -45,7 +47,7 @@ const App = () => {
   }
 
   const toggleTodoCompletion = id => {
-    const todoItem = todoItems.find(n => n.id === id)
+    const todoItem = todoItems.find(item => item.id === id)
     const changedItem = { ...todoItem, completed: !todoItem.completed }
 
     todoService
@@ -64,7 +66,7 @@ const App = () => {
 
     todoItems
       .filter((item, index) => item !== items[index])
-      .forEach((item, index) => todoService.update(item.id, items[index]).catch(console.log("update broke")))
+      .forEach((item, index) => todoService.update(item.id, items[index]))
 
     setTodoItems(items);
   }
@@ -81,7 +83,6 @@ const App = () => {
               {todoItems.map((item, index) => {
                 return (
                   <TodoItem
-                    // showAll={showAll}
                     key={item.id}
                     item={item}
                     index={index}

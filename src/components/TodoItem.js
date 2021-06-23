@@ -7,7 +7,7 @@ const TodoItem = ({ item, toggleCompletion, deleteCompletion, index, showAll }) 
 
   const buttonStyle = { float: "right", margin: "0 0.5em" }
 
-  const listGroupStyle = item.completed ? {textDecoration:"line-through"} : null 
+  const listGroupStyle = item.completed ? {textDecoration:"line-through"} : null
 
   return (
     <Draggable key={item.id} draggableId={item.id} index={index}>
