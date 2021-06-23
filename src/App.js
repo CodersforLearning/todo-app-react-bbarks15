@@ -37,21 +37,23 @@ const App = (props) => {
   const deleteTodoItem = id => {
     todoService
       .remove(id)
-      .then(setTodoItems(todoItems.filter(item => item.id !== id)))
+      .then(() => {
+        setTodoItems(todoItems.filter(item => item.id !== id))
+      })
   }
 
   const handleTodoItemChange = (event) => {
     setNewTodoItem(event.target.value)
   }
 
-  const toggleTodoCompletion = id => {
-    const todoItem = todoItems.find(n => n.id === id)
+  const toggleTodoCompletion = targetId => {
+    const todoItem = todoItems.find(item => item.id === targetId)
     const changedItem = { ...todoItem, completed: !todoItem.completed }
 
     todoService
-      .update(id, changedItem)
-      .then(returnedTodo => {
-        setTodoItems(todoItems.map(item => item.id !== id ? item : returnedTodo))
+      .update(targetId, changedItem)
+      .then(returnedTodo => { // UPDATE STATE OF TARGET TODO ITEM
+        setTodoItems(todoItems.map(item => item.id !== targetId ? item : returnedTodo))
       })
   }
 
@@ -68,7 +70,8 @@ const App = (props) => {
       <Button onClick={() => setShowAll(!showAll) } > {showAll ? "Hide Completed" : "Show All" } </Button>
       </div>
       <ListGroup>
-        {todoItemsToShow.map(item => <TodoItem key={item.id}
+        {todoItemsToShow.map(item => <TodoItem
+                                         key={item.id}
                                          item={item}
                                          toggleCompletion={() => toggleTodoCompletion(item.id)}
                                          deleteCompletion={() => deleteTodoItem(item.id)} />)}
