@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import TodoItem from './components/TodoItem'
 import todoService from './services/todo'
 import { ListGroup, Form, Button } from 'react-bootstrap'
 import { nanoid } from 'nanoid'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 const App = (props) => {
   const [todoItems, setTodoItems] = useState([])
@@ -59,23 +60,52 @@ const App = (props) => {
     ? todoItems
     : todoItems.filter(item => !item.completed)
 
+  const handleOnDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(todoItems);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    todoItems.forEach((item, index) => {
+      if (item !== items[index]) {
+        todoService.update(item.id, items[index])
+      }
+    })
+
+    setTodoItems(items);
+  }
+
   return (
-    <div className="container" style={{marginTop: "5vh"}}>
-      <div style={{textAlign:"center"}}>
+    <div className="container" style={{ marginTop: "5vh" }}>
+      <div style={{ textAlign: "center" }}>
         <h1>Shit I Need Todo</h1>
       </div >
-      <div style={{ textAlign:"right", margin:" 0.5% 0" }} >
-      <Button onClick={() => setShowAll(!showAll) } > {showAll ? "Hide Completed" : "Show All" } </Button>
+      <div style={{ textAlign: "right", margin: " 0.5% 0" }} >
+        <Button onClick={() => setShowAll(!showAll)} > {showAll ? "Hide Completed" : "Show All"} </Button>
       </div>
-      <ListGroup>
-        {todoItemsToShow.map(item => <TodoItem key={item.id}
-                                         item={item}
-                                         toggleCompletion={() => toggleTodoCompletion(item.id)}
-                                         deleteCompletion={() => deleteTodoItem(item.id)} />)}
-      </ListGroup>
-      <Form onSubmit={addTodoItem} style={{marginTop: "1em"}}>
-          <Form.Control value={newTodoItem} onChange={handleTodoItemChange} />
-          <Button type="submit" style={{marginTop: "0.5%"}}>Save</Button>
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+        <Droppable droppableId="todo">
+          {(provided) => (
+            <ListGroup {...provided.droppableProps} ref={provided.innerRef}>
+              {todoItemsToShow.map((item, index) => {
+                return (
+                  <TodoItem
+                    item={item}
+                    index={index}
+                    toggleCompletion={() => toggleTodoCompletion(item.id)}
+                    deleteCompletion={() => deleteTodoItem(item.id)} />
+                )
+              }
+              )}
+              {provided.placeholder}
+            </ListGroup>
+          )}
+        </Droppable>
+      </DragDropContext>
+      <Form onSubmit={addTodoItem} style={{ marginTop: "1em" }}>
+        <Form.Control value={newTodoItem} onChange={handleTodoItemChange} />
+        <Button type="submit" style={{ marginTop: "0.5%" }}>Save</Button>
       </Form>
     </div>
   );
