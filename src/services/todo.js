@@ -17,12 +17,8 @@ const remove = async (id) => {
 }
 
 const update = (id, newObject) => {
-  try {
-    const response = axios.put(`${baseUrl}/${id}`, newObject)
-    return response.then(i => i.data)
-  } catch (error) {
-    return null
-  }
+  const response = axios.put(`${baseUrl}/${id}`, newObject)
+  return response.then(i => i.data)
 }
 
 

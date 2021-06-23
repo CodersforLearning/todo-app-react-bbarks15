@@ -5,10 +5,9 @@ import { ListGroup, Form, Button } from 'react-bootstrap'
 import { nanoid } from 'nanoid'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
-const App = (props) => {
+const App = () => {
   const [todoItems, setTodoItems] = useState([])
   const [newTodoItem, setNewTodoItem] = useState('')
-  const [showAll, setShowAll] = useState(true)
 
   useEffect(() => {
     todoService
@@ -29,7 +28,7 @@ const App = (props) => {
     todoService
       .create(newTodo)
       .then(returnedTodo => {
-        setTodoItems(todoItems.concat(newTodo))
+        setTodoItems(todoItems.concat(returnedTodo))
         setNewTodoItem('')
       })
 
@@ -56,10 +55,6 @@ const App = (props) => {
       })
   }
 
-  const todoItemsToShow = showAll
-    ? todoItems
-    : todoItems.filter(item => !item.completed)
-
   const handleOnDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -67,11 +62,9 @@ const App = (props) => {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    todoItems.forEach((item, index) => {
-      if (item !== items[index]) {
-        todoService.update(item.id, items[index])
-      }
-    })
+    todoItems
+      .filter((item, index) => item !== items[index])
+      .forEach((item, index) => todoService.update(item.id, items[index]).catch(console.log("update broke")))
 
     setTodoItems(items);
   }
@@ -81,16 +74,15 @@ const App = (props) => {
       <div style={{ textAlign: "center" }}>
         <h1>Shit I Need Todo</h1>
       </div >
-      <div style={{ textAlign: "right", margin: " 0.5% 0" }} >
-        <Button onClick={() => setShowAll(!showAll)} > {showAll ? "Hide Completed" : "Show All"} </Button>
-      </div>
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId="todo">
           {(provided) => (
             <ListGroup {...provided.droppableProps} ref={provided.innerRef}>
-              {todoItemsToShow.map((item, index) => {
+              {todoItems.map((item, index) => {
                 return (
                   <TodoItem
+                    // showAll={showAll}
+                    key={item.id}
                     item={item}
                     index={index}
                     toggleCompletion={() => toggleTodoCompletion(item.id)}
