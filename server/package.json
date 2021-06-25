@@ -1,0 +1,17 @@
+{
+  "name": "todo-backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node app.js",
+    "build:ui": "rm -rf build && cd ../client/ && npm run build --prod && cp -r build ../server"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "morgan": "~1.9.1",
+    "sequelize": "^6.6.2",
+    "sqlite3": "^5.0.2"
+  }
+}
