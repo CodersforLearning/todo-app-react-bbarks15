@@ -8,6 +8,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 const App = () => {
   const [todoItems, setTodoItems] = useState([])
   const [newTodoItem, setNewTodoItem] = useState('')
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     todoService
@@ -59,6 +60,10 @@ const App = () => {
   }
 
   const handleOnDragEnd = (result) => {
+    if (search !== '') {
+      alert('cannot drag while searching');
+      return;
+    }
     if (!result.destination) return;
 
     const items = Array.from(todoItems);
@@ -76,16 +81,28 @@ const App = () => {
     setTodoItems(reorderedItems);
   }
 
+  const filteredTodoItems = search !== ''
+    ? todoItems.filter(item => item.text.includes(search))
+    : todoItems
+
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value)
+  }
+
   return (
     <div className="container" style={{ marginTop: "5vh" }}>
       <div style={{ textAlign: "center" }}>
         <h1>Shit I Need Todo</h1>
       </div >
+      <Form style={{ margin: "1em 0" }}>
+        <Form.Label>Search</Form.Label>
+        <Form.Control value={search} onChange={handleSearchChange} />
+      </Form>
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId="todo">
           {(provided) => (
             <ListGroup {...provided.droppableProps} ref={provided.innerRef}>
-              {todoItems.map((item, index) => {
+              {filteredTodoItems.map((item, index) => {
                 return (
                   <TodoItem
                     key={item.id}

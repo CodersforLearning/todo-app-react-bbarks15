@@ -3,16 +3,12 @@ var path = require('path');
 var logger = require('morgan');
 const { Sequelize, DataTypes } = require('sequelize');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
 var app = express();
 const port = 3001;
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'build')));
 
 const sequelize = new Sequelize({
@@ -67,7 +63,7 @@ app.put('/todo/:id', async (req, res) => {
     completed: req.body.completed,
     position: req.body.position
   }, {
-    where: {identifier: body.id}
+    where: {identifier: req.body.id}
   });
 
   res.json(req.body);
