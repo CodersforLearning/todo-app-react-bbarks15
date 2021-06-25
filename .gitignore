@@ -122,6 +122,7 @@ dist
 # production
 /client/build
 /server/build
+/server/*.sqlite
 
 # misc
 .DS_Store
