@@ -1,34 +1,22 @@
 {
   "todo": [
     {
-      "id": "os17ZLc1SRuSP78GqBowj",
-      "text": "1",
-      "completed": false
-    },
-    {
-      "id": "26c7UPZndVUTStRIFCuTu",
-      "text": "5",
-      "completed": false
-    },
-    {
-      "id": "E6KSOUvKSwHwL3DzngGjQ",
+      "id": "fPC0Y3chpRqn8Z4ZCwbNq",
       "text": "2",
-      "completed": false
+      "completed": false,
+      "position": 0
     },
     {
-      "id": "tov8EVsooh4kqP_I_OV6F",
-      "text": "1",
-      "completed": true
-    },
-    {
-      "id": "zfyde3W9DxijmJEpxhoGP",
-      "text": "5",
-      "completed": true
-    },
-    {
-      "id": "GzVRWL2CLX4aGeateRfLJ",
+      "id": "Fyn1lX5aN6EIPkiRv35no",
       "text": "3",
-      "completed": false
+      "completed": false,
+      "position": 2
+    },
+    {
+      "id": "yFSI__1lbrQT1g6OyiO2M",
+      "text": "4",
+      "completed": false,
+      "position": 3
     }
   ]
 }

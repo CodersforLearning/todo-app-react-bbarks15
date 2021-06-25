@@ -13,7 +13,7 @@ const App = () => {
     todoService
       .getAll()
       .then(initialTodoItems => {
-        setTodoItems(initialTodoItems)
+        setTodoItems(initialTodoItems.sort((a, b) => a.position - b.position))
       })
   }, [])
 
@@ -23,6 +23,7 @@ const App = () => {
       id: nanoid(),
       text: newTodoItem,
       completed: false,
+      position: todoItems.length,
     }
 
     todoService
@@ -42,7 +43,7 @@ const App = () => {
       })
   }
 
-  const handleTodoItemChange = (event) => {
+  const handleNewTodoItemChange = (event) => {
     setNewTodoItem(event.target.value)
   }
 
@@ -64,11 +65,15 @@ const App = () => {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    todoItems
-      .filter((item, index) => item !== items[index])
-      .forEach((item, index) => todoService.update(item.id, items[index]))
+    const reorderedItems = items.map((item, index) => {
+      return {...item, position:index}
+    })
 
-    setTodoItems(items);
+    reorderedItems
+      .filter((item, index) => item.id !== todoItems[index].id)
+      .forEach((item, index) => todoService.update(item.id, item))
+
+    setTodoItems(reorderedItems);
   }
 
   return (
@@ -97,7 +102,7 @@ const App = () => {
         </Droppable>
       </DragDropContext>
       <Form onSubmit={addTodoItem} style={{ marginTop: "1em" }}>
-        <Form.Control value={newTodoItem} onChange={handleTodoItemChange} />
+        <Form.Control value={newTodoItem} onChange={handleNewTodoItemChange} />
         <Button type="submit" style={{ marginTop: "0.5%" }}>Save</Button>
       </Form>
     </div>
