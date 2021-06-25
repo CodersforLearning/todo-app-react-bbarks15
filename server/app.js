@@ -3,12 +3,16 @@ var path = require('path');
 var logger = require('morgan');
 const { Sequelize, DataTypes } = require('sequelize');
 
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+
 var app = express();
 const port = 3001;
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'build')));
 
 const sequelize = new Sequelize({
@@ -18,13 +22,12 @@ const sequelize = new Sequelize({
 });
 
 const Todo = sequelize.define('Todo', {
-
     identifier: { type: DataTypes.STRING, allowNullL: false },
     text: { type: DataTypes.STRING },
     completed: { type: DataTypes.BOOLEAN },
     position: { type: DataTypes.INTEGER },
   }, {
-  timestamps: false
+    timestamps: false
 });
 
 app.get('/', (req, res) => {
@@ -39,12 +42,11 @@ app.get('/todo', async (req, res) =>{
 })
 
 app.post('/todo', async (req, res) =>{
-  const body = req.body;
   const newTodo = await Todo.create({
-    identifier: body.id,
-    text: body.text,
-    completed: body.completed,
-    position: body.position
+    identifier: req.body.id,
+    text: req.body.text,
+    completed: req.body.completed,
+    position: req.body.position
   });
 
   res.json(req.body);
@@ -59,12 +61,11 @@ app.delete('/todo/:id', async (req, res) => {
 })
 
 app.put('/todo/:id', async (req, res) => {
-  const body = req.body;
   await Todo.update({
-    identifier: body.id,
-    text: body.text,
-    completed: body.completed,
-    position: body.position
+    identifier: req.body.id,
+    text: req.body.text,
+    completed: req.body.completed,
+    position: req.body.position
   }, {
     where: {identifier: body.id}
   });
@@ -72,9 +73,9 @@ app.put('/todo/:id', async (req, res) => {
   res.json(req.body);
 })
 
-app.listen(port, () => {
+app.listen(port, async () => {
   try {
-    sequelize.authenticate();
+    await sequelize.authenticate();
     console.log('Connection has been established successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
